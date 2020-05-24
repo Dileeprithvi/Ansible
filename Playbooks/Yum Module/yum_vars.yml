@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: true
+  gather_facts: false
+  vars:
+    - package: ["git", "httpd", "nmap", "tree"]
+  tasks:
+    - name: Installing the {{package}}
+      yum:
+        name: "{{ item }}"
+        state: present # other states are present, absent, latest
+        with_items: "{{ package}}"
+

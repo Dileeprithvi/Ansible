@@ -1,0 +1,14 @@
+---
+- name: Playbook to install the packages
+  hosts: all
+  become: true
+  tasks:
+    - name: Install the apache Server
+      yum:
+        name: httpd
+        state: present # other states are present, absent, latest
+    - name: Install the Git
+      yum:
+        name: git
+        state: present # other states are present, absent, latest
+

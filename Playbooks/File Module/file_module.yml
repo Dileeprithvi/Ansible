@@ -1,0 +1,31 @@
+---
+- name: Playbook of file module to create a directory and file
+  hosts: all
+  become: true
+  tasks:
+  - name: creating the file
+    file:
+      path: /home/user1/test
+      state: touch
+# An empty file called test created after running the playbook
+  - name: creating the directory
+    file:
+      path: /home/user1/check
+      state: diretory
+# A directory called check created after running the playbook
+  - name: Deleting the directory
+    file:
+      path: /home/user1/check
+      state: absent
+# A directory called check deleted after running the playbook
+
+
+
+# state = touch -> empty file will be created
+# state = absent -> to delete
+# state = directory
+# state = file
+# state = hard --> hard link will created or changed
+# state = link --> soft / symbolicmlink will created or changed
+
+
