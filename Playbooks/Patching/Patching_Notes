@@ -1,0 +1,9 @@
+Why we need to Patch the OS?
+
+Patching is recommended to fix the below:
+    security vulnerabilities, bugs
+    Improve the Usability of Performance
+
+Pre-requisites?
+    - Connectivity with Satellite Server or yum repository
+    - Enough free space in root file system /
