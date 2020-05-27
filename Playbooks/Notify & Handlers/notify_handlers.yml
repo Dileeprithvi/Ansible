@@ -1,0 +1,16 @@
+---
+- name: Playbook to demonstrate the Notify and Hanlders concept
+  hosts: all
+  become: true
+  tasks:
+  - name: Install the Apache Server
+    yum:
+      name: httpd
+      state: latest
+    notify: start the apache server # Note: notify value should be the same of handlers name
+
+  handlers:
+  - name: start the apache server
+    service:
+      name: httpd
+      state: started

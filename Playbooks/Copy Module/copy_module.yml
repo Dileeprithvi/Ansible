@@ -1,0 +1,27 @@
+---
+- name: Ansible Playbook to copy files from master to target / remote machines
+  hosts: all
+  become: true
+  tasks:
+  - name: Copy a file using the mode octal numbers
+    copy:
+      src: /tmp/ref.txt
+      dest: /home/ansible
+      mode: 0600
+      owner: ram
+      group: ram
+ # owner: Name of the user that should own the file/directory, as would be fed to chown.
+ # group: Name of the group that should own the file/directory, as would be fed to chown.
+
+  - name: Copy file using symbolic mode Adding some permissions in user and removing others, giving permission to group
+    copy:
+      src: /tmp/ref.txt
+      dest: /home/ansible
+      mode: u+rw,g=wx,o-rwx    # adding some permissions in user and removing others, giving permission to group
+      owner: ram
+      group: ram
+      backup: yes # backing up the original if it differs from the copied version
+
+
+
+
