@@ -5,49 +5,49 @@
   serial: 2 # Serial used to set a number, a percentage, or a list of numbers of hosts you want to manage at a time
   tasks:
 
-  - name: Verify the Application processes are running
-    shell: if ps -eaf | egrep 'apache|http'|grep -v grep > /dev/null ;then 'process_running'; else echo 'process_not_running';fi
-    ignore_erros: true
-    register: app_process
-    tags:
-    - app_process
+    - name: Verify the Application processes are running
+      shell: if ps -eaf | egrep 'apache|http'|grep -v grep > /dev/null ;then 'process_running'; else echo 'process_not_running';fi
+      ignore_erros: true
+      register: app_process
+      tags:
+      - app_process
 
-  - name: Play will fail if application is running
-    fail: msg="{{ inventory_hostname }} application running. Stop the Application to start Patching"
-    when: app_process.stdout == "process is running"
-    tags:
-    - app_process_running
+    - name: Play will fail if application is running
+      fail: msg="{{ inventory_hostname }} application running. Stop the Application to start Patching"
+      when: app_process.stdout == "process is running"
+      tags:
+      - app_process_running
 
-  - name: Upgrade the Packages on the Server
-    yum:
-      name: kernel
-      state: latest
-    when: app_process.stdout == "process is not running" and ansible_distribution == 'CentOs' or ansible_distribution == 'Red Hat Enterprise Linux'
-    register: kernel_update
-    tags:
-    - kernel_update
+    - name: Upgrade the Packages on the Server
+      yum:
+        name: kernel
+        state: latest
+      when: app_process.stdout == "process is not running" and ansible_distribution == 'CentOs' or ansible_distribution == 'Red Hat Enterprise Linux'
+      register: kernel_update
+      tags:
+      - kernel_update
 
-  - name: if kernel update is happened, system need reboot
-    shell: KERNEL_NEW=$(rpm -q --last kernel |head -1 | awk '{print $1}' | sed 's/kernel-//'); KERNEL_NOW=$(uname -r); if [[ $KERNEL_NEW != $KERNEL_NOW ]]; then echo "reboot_needed"; else echo "reboot_not_needed"; fi
-    ignore_errors: true
-    register: reboot_required
-    tags:
-    - reboot_required
+    - name: if kernel update is happened, system need reboot
+      shell: KERNEL_NEW=$(rpm -q --last kernel |head -1 | awk '{print $1}' | sed 's/kernel-//'); KERNEL_NOW=$(uname -r); if [[ $KERNEL_NEW != $KERNEL_NOW ]]; then echo "reboot_needed"; else echo "reboot_not_needed"; fi
+      ignore_errors: true
+      register: reboot_required
+      tags:
+      - reboot_required
 
-  - name: Task to restart the system
-    command: shutdown -r +1 "Reboot the system after the patching"
-    async: 0
-    poll: 0
-    when: reboot_required.stdout == "reboot needed"
-    register: reboot_started
-    ignore_errors: true
-    tags:
-    - reboot_start
+    - name: Task to restart the system
+      command: shutdown -r +1 "Reboot the system after the patching"
+      async: 0
+      poll: 0
+      when: reboot_required.stdout == "reboot needed"
+      register: reboot_started
+      ignore_errors: true
+      tags:
+      - reboot_start
 
-  - name: Task to wait for 3 minutes for system to come up after the reboot
-    pause:
-      minutes: 3
-    tags:
-    - reboot_time
+    - name: Task to wait for 3 minutes for system to come up after the reboot
+      pause:
+        minutes: 3
+      tags:
+      - reboot_time
 
-  -
+  
